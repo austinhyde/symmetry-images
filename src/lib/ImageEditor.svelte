@@ -17,7 +17,7 @@
   });
 
   $: {
-    if (bounds && img) {
+    if (img && screenBounds) {
       bounds = screenToImg(screenBounds);
     }
   };

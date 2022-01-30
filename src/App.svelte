@@ -5,32 +5,22 @@
 
   let src = null;
   $: {console.log(src)}
-  let bounds = {x: 20, y: 30, w: 50, h: 80};
-  let mirrors = 10;
+  let bounds = null;
 </script>
 
 <main>
-  <h1>1. Pick an image</h1>
-  <ImagePicker bind:src/>
-
+  <section>
+    <h1>1. Pick Image & Area</h1>
+    <ImagePicker bind:src/>
+    {#if src}<ImageEditor {src} bind:bounds/>{/if}
+  </section>
   {#if src}
-  <div class="hsplit">
-    <div>
-      <h1>2. Pick Area</h1>
-      <ImageEditor {src} bind:bounds/>
-    </div>
-    <div>
-      <h1>3. Mirror</h1>
-      <div>
-        <label for="mirrors">How many mirrored images?</label>
-        <input type=range min=2 bind:value={mirrors}>
-        <input id="mirrors" type=number min=2 bind:value={mirrors}>
-      </div>
-      <MirroredImage {src} {mirrors} {bounds} />
-      <h1>4. Save it!</h1>
-      <p>Right click the image and copy or save it!</p>
-    </div>
-  </div>
+  <section>
+    <h1>2. Mirror</h1>
+    <MirroredImage {src} {bounds} />
+    <h1>3. Save it!</h1>
+    <p>Right click the image and copy or save it!</p>
+  </section>
   {/if}
 </main>
 
@@ -44,22 +34,19 @@
   }
 
   main {
-    text-align: center;
-    padding: 1em;
-    margin: 0 auto;
-    max-width: 100%;
-  }
-  .hsplit {
     display: flex;
-    gap: 5px;
-    & > * {
-      flex: 1 1 auto;
-      max-width: 50%;
+    justify-content: center;
+    section {
+      flex: 1;
     }
   }
 
   :global(img) {
     max-width: 100%;
+  }
+  :global(p) {
+    text-align: center;
+    line-height: 30px;
   }
 
   h1 {
@@ -69,5 +56,6 @@
     font-weight: 100;
     line-height: 1.1;
     margin: 1rem auto;
+    text-align: center;
   }
 </style>

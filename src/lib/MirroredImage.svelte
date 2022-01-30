@@ -3,8 +3,9 @@
   import draw from './draw';
 
   export let src: string;
-  export let mirrors: number;
   export let bounds: {x: number, y: number, w: number, h: number};
+
+  let mirrors = 10;
 
   let img: HTMLImageElement;
   $: {
@@ -33,27 +34,25 @@
         ctx.restore();
       }
     }
-    // ctx.drawImage(img,
-    //   bounds.x, bounds.y, bounds.w, bounds.h,
-    //   0, 0, bounds.w, bounds.h,
-    // );
-
-    // ctx.translate(2*bounds.w, 0);
-    // ctx.scale(-1, 1);
-    // ctx.drawImage(img,
-    //   bounds.x, bounds.y, bounds.w, bounds.h,
-    //   0, 0, bounds.w, bounds.h,
-    // );
-
-    // ctx.translate(2*bounds.w, 0);
-    // ctx.scale(-1, 1);
-    // ctx.drawImage(img,
-    //   bounds.x, bounds.y, bounds.w, bounds.h,
-    //   2*bounds.w, 0, bounds.w, bounds.h,
-    // );
   };
 </script>
 
+<p>
+  <label for="mirrors">How many mirrored images?</label>
+  <input type=range min=2 max=20 bind:value={mirrors}>
+  <input id="mirrors" type=number min=2 max=20 bind:value={mirrors}>
+</p>
 {#if bounds}
 <canvas use:draw={render} style="max-width:100%"/>
+{:else}
+<p>(Draw an area on the image first!)</p>
 {/if}
+
+<style lang="scss">
+  input[type=number] {
+    max-width: 50px;
+  }
+  input {
+    vertical-align: middle;
+  }
+</style>
