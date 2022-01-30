@@ -13,6 +13,7 @@
   <h1>1. Pick an image</h1>
   <ImagePicker bind:src/>
 
+  {#if src}
   <div class="hsplit">
     <div>
       <h1>2. Pick Area</h1>
@@ -30,7 +31,7 @@
       <p>Right click the image and copy or save it!</p>
     </div>
   </div>
-
+  {/if}
 </main>
 
 <style lang="scss">
@@ -68,6 +69,5 @@
     font-weight: 100;
     line-height: 1.1;
     margin: 1rem auto;
-    max-width: 14rem;
   }
 </style>
