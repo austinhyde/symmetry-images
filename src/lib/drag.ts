@@ -12,7 +12,6 @@ type changeHandler = (delta:delta) => void;
 type handlers = {
   onStart?: (point) => void,
   onDrag?: changeHandler,
-  onEnd?: changeHandler,
 }
 
 // type predicate for TS
@@ -28,7 +27,7 @@ export default function drag(node: HTMLElement, param?: handlers|changeHandler) 
     handlers = param;
   }
 
-  let start = null;
+  let last = null;
 
   function getClient(e: MouseEvent|TouchEvent): point {
     if (isTouch(e)) {
@@ -43,58 +42,59 @@ export default function drag(node: HTMLElement, param?: handlers|changeHandler) 
     }
   }
 
-  function getPoint(e: MouseEvent | TouchEvent): point {
+  function getNodeRelative(p: point): point {
     const bounds = node.getBoundingClientRect();
-    const client = getClient(e);
     return {
-      x: client.x - bounds.x,
-      y: client.y - bounds.y,
+      x: p.x - bounds.x,
+      y: p.y - bounds.y,
     };
   }
   function getDelta(p: point): delta {
     return {
-      dx: p.x - start.x,
-      dy: p.y - start.y,
+      dx: p.x - last.x,
+      dy: p.y - last.y,
     };
   }
 
   function onStart(e: MouseEvent|TouchEvent) {
     e.preventDefault();
     e.stopPropagation();
-    start = getPoint(e);
-    if (handlers.onStart) handlers.onStart(start);
-  }
-  function onEnd(e: MouseEvent | TouchEvent) {
-    if (!start) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (handlers.onEnd) handlers.onEnd(getDelta(getPoint(e)));
-    start = null;
+
+    last = getClient(e);
+    if (handlers.onStart) handlers.onStart(getNodeRelative(last));
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchend', onEnd);
   }
   function onMove(e: MouseEvent | TouchEvent) {
-    if (!start) return;
     e.preventDefault();
     e.stopPropagation();
-    if (handlers.onDrag) handlers.onDrag(getDelta(getPoint(e)));
+
+    const point = getClient(e);
+    const delta = getDelta(point);
+    last = point;
+
+    if (handlers.onDrag) handlers.onDrag(delta);
+  }
+  function onEnd(e: MouseEvent | TouchEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('touchmove', onMove);
+    window.removeEventListener('mouseup', onEnd);
+    window.removeEventListener('touchend', onEnd);
   }
 
   node.addEventListener('touchstart', onStart);
-  node.addEventListener('touchmove', onMove);
-  node.addEventListener('touchend', onEnd);
   node.addEventListener('mousedown', onStart);
-  node.addEventListener('mousemove', onMove);
-  node.addEventListener('mouseup', onEnd);
-  // node.addEventListener('mouseleave', onEnd);
 
   return {
     destroy() {
       node.removeEventListener('touchstart', onStart);
-      node.removeEventListener('touchmove', onMove);
-      node.removeEventListener('touchend', onEnd);
       node.removeEventListener('mousedown', onStart);
-      node.removeEventListener('mousemove', onMove);
-      node.removeEventListener('mouseup', onEnd);
-      // node.removeEventListener('mouseleave', onEnd);
     }
   }
 }

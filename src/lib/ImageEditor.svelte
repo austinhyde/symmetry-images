@@ -8,7 +8,6 @@
   
   let start;
   let img: HTMLImageElement;
-  let imgSize;
   let screenBounds;
   
   onMount(() => {
@@ -45,28 +44,23 @@
   }
 
   function onStart(p) {
-    start = p;
+    screenBounds = {
+      ...p,
+      w: 0,
+      h: 0,
+    };
   }
   function onDrag(d) {
-    let b = {
-      x: start.x,
-      y: start.y,
-      w: d.dx,
-      h: d.dy,
+    screenBounds = {
+      ...screenBounds,
+      w: screenBounds.w + d.dx,
+      h: screenBounds.h + d.dy,
     };
-    if (b.w < 0) {
-      b.x += b.w;
-      b.w = -b.w;
-    }
-    if (b.h < 0) {
-      b.y += b.h;
-      b.h = -b.h;
-    }
-
-    screenBounds = b;
   }
 </script>
 
+<!-- <pre>{JSON.stringify(screenBounds)}</pre>
+<pre>{JSON.stringify(bounds)}</pre> -->
 <div class="editor" use:drag={{onStart, onDrag}}>
   <img bind:this={img} {src}/>
   {#if screenBounds}<CropArea bind:bounds={screenBounds}/>{/if}

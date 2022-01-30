@@ -3,19 +3,19 @@
   import drag from './drag';
   export let bounds;
 
-  function shiftL(p) {
-    bounds.x += p.dx;
-    bounds.w -= p.dx;
+  function shiftL(d) {
+    bounds.x += d.dx;
+    bounds.w -= d.dx;
   }
-  function shiftT(p) {
-    bounds.y += p.dy;
-    bounds.h -= p.dy;
+  function shiftT(d) {
+    bounds.y += d.dy;
+    bounds.h -= d.dy;
   }
-  function shiftR(p) {
-    bounds.w += p.dx;
+  function shiftR(d) {
+    bounds.w += d.dx;
   }
-  function shiftB(p) {
-    bounds.h += p.dy;
+  function shiftB(d) {
+    bounds.h += d.dy;
   }
   const all = (...fs) => p => fs.forEach(f => f(p));
 </script>
@@ -36,7 +36,7 @@
 </div>
 
 <style lang="scss">
-  $knobsize: 14.5px;
+  $knobsize: 10px;
 
   .crop-area {
     position: absolute;
@@ -56,46 +56,49 @@
     width: $knobsize;
     height: $knobsize;
     border-radius: 50%;
+    background-color: white;
     border: 1px solid white;
+    margin-left: calc(0px - $knobsize/2);
+    margin-top: calc(0px - $knobsize/2);
   }
   .tl {
-    top: calc((0px - $knobsize/2) - 1px);
-    left: calc((0px - $knobsize/2) - 1px);
+    top: 0;
+    left: 0;
     cursor: nw-resize;
   }
   .t {
-    top: calc((0px - $knobsize/2) - 1px);
-    left: calc(50% - $knobsize/2);
+    top: 0;
+    left: 50%;
     cursor: n-resize;
   }
   .tr {
-    top: calc((0px - $knobsize/2) - 1px);
-    right: calc((0px - $knobsize/2));
+    top: 0;
+    left: 100%;
     cursor: ne-resize;
   }
   .r {
-    top: calc(50% - $knobsize/2);
-    right: calc((0px - $knobsize/2));
+    top: 50%;
+    left: 100%;
     cursor: e-resize;
   }
   .br {
-    bottom: calc((0px - $knobsize/2) - 1px);
-    right: calc((0px - $knobsize/2));
+    top: 100%;
+    left: 100%;
     cursor: se-resize;
   }
   .b {
-    bottom: calc((0px - $knobsize/2) - 1px);
-    left: calc(50% - $knobsize/2);
+    top: 100%;
+    left: 50%;
     cursor: s-resize;
   }
   .bl {
-    bottom: calc((0px - $knobsize/2) - 1px);
-    left: calc((0px - $knobsize/2) - 1px);
+    top: 100%;
+    left: 0;
     cursor: sw-resize;
   }
   .l {
-    left: calc((0px - $knobsize/2) - 1px);
-    top: calc(50% - $knobsize/2);
+    left: 0;
+    top: 50%;
     cursor: e-resize;
   }
 </style>
